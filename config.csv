@@ -1,2 +1,2 @@
-max_time_diff,filename,cmd_file,workmode_en,workdir,sleeptime,init_en,tampfile
-120,test1.txt,command.csv,1,D:\\testfile1,10,0,tamp.txt
+max_time_diff,filename,cmd_file,workmode_en,workdir,sleeptime,init_en,tampfile,clear,tologfile
+120,test1.txt,command.csv,1,D:\\testfile1,10,0,tamp.txt,0,0
