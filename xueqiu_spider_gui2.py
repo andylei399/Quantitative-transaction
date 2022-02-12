@@ -17,8 +17,9 @@ import shutil
 import os
 import datetime
 import pandas as pd
-import easyquotation
-
+#import easyquotation
+import sys
+from quotation import quotation
 
 
 update_tamp=[]
@@ -39,6 +40,8 @@ class trade_uint:
         self.tampfile =tampfile
         self.tamp = self.read_timetamp()
         
+        self.quo = quotation()
+        
     # def get_readl_price(self,code):
     #     quotation = easyquotation.use('sina')
     #     quotation.market_snapshot(prefix=True)
@@ -46,10 +49,7 @@ class trade_uint:
     #     #print(p)
     #     return p
     
-        
-        
-        
-        
+
         
     def exist_tamp(self,t1):
         exist = 0
@@ -85,6 +85,7 @@ class trade_uint:
         return first1
 
 
+
     def is_first_timeover(self,tamp):
         global update1_tamp
         global update1_first
@@ -100,6 +101,7 @@ class trade_uint:
             update1_tamp.append(tamp)
             
         return first1
+
 
     def print_stock(self,strag_name,total_assets,config_file):
         xq_user = easytrader.use('xq')
@@ -148,10 +150,20 @@ class trade_uint:
             # print("real price !!!!!!!!!!!")
             # print(p)
             # print("\n\n")
+            # st = [stock_symbol2[0]]
+            # print(st)
+            # p0 = self.quo.get_price(st,1)
+            # print("the price is :")
+            # print(p0)
 
             if (price==None):
+                price1 = self.quo.get_price(stock_symbol2[0])
                 print("%s AAAAAAï¼price is none @ %s " % (stock_name,self.get_now()))
-                continue
+                #continue            
+                if (b1-b0 >0):
+                    price = price1[0]
+                else:
+                    price = price1[1]
             
             shares = (b1 - b0) * total_assets / 100 / price 
             lots = ((int)(shares / unit1 )) * unit1  ###TODO
@@ -197,7 +209,7 @@ class trade_uint:
         for i in range(len(b)):
             stock_name = b[i]['stock_name']
             stock_symbol = b[i]['stock_symbol']
-            volume = b[i]['volume']   ### get current price .....
+#            volume = b[i]['volume']   ### get current price .....
             weight = b[i]['weight']
             updated_at = b[i]['updated_at']
             
@@ -209,17 +221,21 @@ class trade_uint:
             else:
                 unit1=100
 
-            if (volume==0):
-                print("%s volume is 0 @ %s" % (stock_name,self.get_now()))
-                continue
+            # if (volume==0):
+            #     print("%s volume is 0 @ %s" % (stock_name,self.get_now()))
+            #     continue
             if (weight==0):
                 print("%s weight is none % s" %  (stock_name,self.get_now()))
                 continue
 
-            price1 = (weight / 100 / volume)   ##more high in order sucess
+            #price1 = (weight / 100 / volume)   ##more high in order sucess            
+            #price2 = int(price1 * 100)         
+            #price = price2 / 100 
             
-            price2 = int(price1 * 100) 
-            price = price2 / 100 
+            price1 = self.quo.get_price(stock_symbol2[0])
+            price = price1[1]
+            
+            
 
             b1 = b[i]['weight']           
             shares = (b1 - 0) * total_assets / 100 / price 
@@ -520,7 +536,7 @@ class trade_wrapper():
 #    process()
 #    
     
-u0=trade_wrapper(workmode_en=1)
+u0=trade_wrapper(workmode_en=0)
 u0.process()
 #你好
 
