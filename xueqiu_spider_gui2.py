@@ -145,16 +145,6 @@ class trade_uint:
             else:
                 b0 = b[i]['prev_weight_adjusted']
 
-            
-            # p  = self.get_readl_price(stock_symbol2[0])
-            # print("real price !!!!!!!!!!!")
-            # print(p)
-            # print("\n\n")
-            # st = [stock_symbol2[0]]
-            # print(st)
-            # p0 = self.quo.get_price(st,1)
-            # print("the price is :")
-            # print(p0)
 
             if (price==None):
                 price1 = self.quo.get_price(stock_symbol2[0])
@@ -532,9 +522,6 @@ class trade_wrapper():
                     print("running %s ,working=%d" %(self.get_now(),en))
                 cnt = cnt + 1
             
-#if (debug_mode==1):
-#    process()
-#    
     
 u0=trade_wrapper(workmode_en=0)
 u0.process()
