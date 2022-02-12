@@ -386,7 +386,7 @@ class trade_top:
             sn = self.strag_name[i]     
 
             xqjson =self.gen_xqjson(cf)
-            second1 = random.randint(15,30)
+            second1 = random.randint(10,20)
             time.sleep(second1)
             
             trade_uint_u0 =trade_uint(workmode_en=self.workmode_en,max_time_diff=self.max_time_diff,filename=self.filename,config_file=xqjson,total_assets=ta,strag_name=sn,init_en=self.init_en,tampfile=self.tampfile)
@@ -514,8 +514,8 @@ class trade_wrapper():
                     
 
                 #xqjson =self.gen_xqjson(cf)
-                second1 = random.randint(1,5)
-                time.sleep(second1)
+                #second1 = random.randint(1,5)
+                #time.sleep(second1)
                 
                 #time.sleep(st)    
                 if(cnt%30==0) or (self.workmode_en==0):
@@ -523,7 +523,7 @@ class trade_wrapper():
                 cnt = cnt + 1
             
     
-u0=trade_wrapper(workmode_en=0)
+u0=trade_wrapper(workmode_en=1)
 u0.process()
 #你好
 
