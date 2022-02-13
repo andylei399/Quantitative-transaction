@@ -1,14 +1,16 @@
 git config --global http.sslverify false
 git config --global user.name "andylei399"
 git config --global user.email "399394127@qq.com"
-git config
 git config --global http.proxy
 git config --global https.proxy
 git config --global --unset http.proxy
 git config --global --unset https.proxy
-###cd Quantitative-transaction  ###NOTICE
 git push -u origin main  ###must notice the current dir is master or main
 
+
+
+###cd Quantitative-transaction  ###NOTICE
+#git config
 #git clone https://github.com/andylei399/Quantitative-transaction.git
 
 
