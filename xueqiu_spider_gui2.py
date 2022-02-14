@@ -303,9 +303,12 @@ class trade_uint:
         print("write tamp =%s (time is %s)" % (str2,time1))
         
     def read_timetamp(self):
-        f = open(self.tampfile, 'r')
-        text_lines = f.readlines()
-        f.close()
+        if (os.path.isfile(self.tampfile)):
+            f = open(self.tampfile, 'r')
+            text_lines = f.readlines()
+            f.close()
+        else:
+            return []
 
         
         pattern = re.compile(r'\d+')   # æ¥æ¾æ°å­
