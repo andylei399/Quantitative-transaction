@@ -19,7 +19,7 @@ import datetime
 import pandas as pd
 #import easyquotation
 import sys
-from quotation import quotation
+#from quotation import quotation
 
 
 update_tamp=[]
@@ -40,7 +40,7 @@ class trade_uint:
         self.tampfile =tampfile
         self.tamp = self.read_timetamp()
         
-        self.quo = quotation()
+#        self.quo = quotation()
         
     # def get_readl_price(self,code):
     #     quotation = easyquotation.use('sina')
@@ -147,13 +147,13 @@ class trade_uint:
 
 
             if (price==None):
-                price1 = self.quo.get_price(stock_symbol2[0])
+                #price1 = self.quo.get_price(stock_symbol2[0])
                 print("%s AAAAAAï¼price is none @ %s " % (stock_name,self.get_now()))
-                #continue            
-                if (b1-b0 >0):
-                    price = price1[0]
-                else:
-                    price = price1[1]
+                continue            
+#                if (b1-b0 >0):
+#                    price = price1[0]
+#                else:
+#                    price = price1[1]
             
             shares = (b1 - b0) * total_assets / 100 / price 
             lots = ((int)(shares / unit1 )) * unit1  ###TODO
@@ -199,7 +199,7 @@ class trade_uint:
         for i in range(len(b)):
             stock_name = b[i]['stock_name']
             stock_symbol = b[i]['stock_symbol']
-#            volume = b[i]['volume']   ### get current price .....
+            volume = b[i]['volume']   ### get current price .....
             weight = b[i]['weight']
             updated_at = b[i]['updated_at']
             
@@ -211,19 +211,19 @@ class trade_uint:
             else:
                 unit1=100
 
-            # if (volume==0):
-            #     print("%s volume is 0 @ %s" % (stock_name,self.get_now()))
-            #     continue
+            if (volume==0):
+                print("%s volume is 0 @ %s" % (stock_name,self.get_now()))
+                continue
             if (weight==0):
                 print("%s weight is none % s" %  (stock_name,self.get_now()))
                 continue
 
-            #price1 = (weight / 100 / volume)   ##more high in order sucess            
-            #price2 = int(price1 * 100)         
-            #price = price2 / 100 
+            price1 = (weight / 100 / volume)   ##more high in order sucess            
+            price2 = int(price1 * 100)         
+            price = price2 / 100 
             
-            price1 = self.quo.get_price(stock_symbol2[0])
-            price = price1[1]
+#            price1 = self.quo.get_price(stock_symbol2[0])
+#            price = price1[1]
             
             
 
@@ -303,9 +303,12 @@ class trade_uint:
         print("write tamp =%s (time is %s)" % (str2,time1))
         
     def read_timetamp(self):
-        f = open(self.tampfile, 'r')
-        text_lines = f.readlines()
-        f.close()
+        if (os.path.isfile(self.tampfile)):
+            f = open(self.tampfile, 'r')
+            text_lines = f.readlines()
+            f.close()
+        else:
+            return []
 
         
         pattern = re.compile(r'\d+')   # æ¥æ¾æ°å­
@@ -523,7 +526,7 @@ class trade_wrapper():
                 cnt = cnt + 1
             
     
-u0=trade_wrapper(workmode_en=1)
+u0=trade_wrapper(workmode_en=0)
 u0.process()
 #你好
 
