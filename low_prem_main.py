@@ -27,6 +27,6 @@ accountfile='account.csv'
 u0_csv = jisilu_lib(lookup_csv)
         
 u0 = qmt_lib(bond_nums,threshold,prem_coef,price_coef,record_file,stratgy_name,max_capital,Info,accID,Mode,lookup_csv,recordfile,accountfile  )
-u0.run()
+u0.run2()
 
      

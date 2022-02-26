@@ -274,55 +274,22 @@ class qmt_lib:
         self.p0.write_cash(self.accountfile)
         
         
-        
-        
-        
+    def run2(self):
+        self.get_lookup_df()
+        self.get_pos_df()
+        N= self.max_stock_nums 
+        self.lowestN_df = self.u0.df_filter('new_dlow_rank',N)
+        self.lowestM_df = self.u0.df_filter('new_dlow_rank',self.M)
+        print("lowestM")
+        print(self.lowestM_df)
+        print("lowestN")
+        print(self.lowestN_df)
+        self.pos_df     = self.p0.df
+       
+        self.get_sub_df()
+        self.op_send_order()
 
-        
-        # self.p0 = qmt_basic_lib(file=self.pos_file)  ##def check_position(df1,pos_file): add to 
-        # print("posfile:")
-        # print(self.p0.df)
-        # # self.p0.check_position(self.u0, 'new_dlow_M')
-        # # print("checked posfile")
-        # print(self.p0.df)
-        # self.p0.pos_filter()
-        # f1='account.csv'
-        # self.p0.get_cash(f1)
-        
-        # N = self.max_stock_nums - self.p0.hold_cnt
-        # for i in self.p0.df['bond_id']:
-        #     lap = self.p0.df['overlap'][i]
-        #     if lap==True:
-        #         self.u0.drop_row(i)
-        #         print("drop u0 i=%s" %(i))
-        # print("max num=%d,hold_cnt=%d,N=%d" %(self.max_stock_nums,self.p0.hold_cnt,N))
-        # print("u0.df after drop")
-        # print(self.u0.df)
-        
-        # self.u0.get_minN('new_dlow',N,'new_dlow_N') 
-        # m=self.u0.df['new_dlow_N']==True
-        # df3 = self.u0.df[m]
-        
-        # for i in df3['bond_id']:
-        #     bond_nm      =self.u0.get_pixel(i, 'bond_nm')
-        #     postions     =0 
-        #     stock_id     =self.u0.get_pixel(i, 'stock_id')
-        #     convert_price=self.u0.get_pixel(i, 'convert_price')
-        #     bond_id      =self.u0.get_pixel(i, 'bond_id')
-        #     hold         =False  
-        #     overlap      =False   
-        #     row=[self.stratgy_name,bond_nm, postions, stock_id,convert_price, bond_id, hold, overlap]             
-        #     self.p0.write_row(i,row)
-            
-        # self.p0.get_market('bond_id')
-        # self.p0.get_market('stock_id')   
-        # self.p0.cal_target_lots2(self.max_capital,self.max_stock_nums)
-        # self.p0.write_cash(f1)
-        # print("before send order")
-        # print(self.p0.df)
-        # self.p0.order_send(self.ContextInfo, self.accID)
-        # self.write_record()
-        
+
         
         
         
