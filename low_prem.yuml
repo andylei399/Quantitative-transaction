@@ -1,0 +1,13 @@
+// {type:class}
+// {generate:true}
+
+
+
+[get_bond]->[bond_csv]
+[bond_csv]->[QMT] 
+[QMT]->[price_csv]
+[QMT]->[pos_csv]
+[price_csv]->[cal_prem]
+[cal_prem]->[rank_MN]
+[rank_MN]->[lot_list]
+//every bond has the same capital
