@@ -50,7 +50,6 @@ class qmt_lib:
         print(df)
 
     def write_record(self):
-        # newpos = qmt_basic_lib(file=self.pos_file)
         newpos = self.newpos_df.copy()
         record = self.new_record_df.copy()
         
