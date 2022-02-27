@@ -14,10 +14,11 @@ class jisilu_lib:
 
     def get_dat(self):
         import json
-        import requests
-        import csv
-        import re
-        from lxml import etree
+#        import requests
+#        import csv
+#        import re
+#        from lxml import etree
+        
     # #headers = {
     # #    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"}
     # headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36'}

@@ -43,28 +43,6 @@ class qmt_lib:
         self.record = []
         self.pos =[]
 
-    def print1(self,df):  ###this can pointer print to log file
-        import sys
-        log = open('log.txt','w')
-        sys.stdout = log
-        print(df)
-
-    def write_record(self):
-        newpos = self.newpos_df.copy()
-        record = self.new_record_df.copy()
-        
-        newpos.to_csv(self.pos_file  ,encoding='gbk')
-        record.to_csv(self.recordfile,encoding='gbk')
-                
-        #import pandas as pd
-        #pd.set_option('display.max_rows',None)   
-        print("final pos file")
-        print(newpos)        
-        # print('newpos')
-        # print(newpos.df)
-        print('final record file')
-        print(record)
-
     def get_lookup_df(self):
         self.u0 = qmt_basic_lib(file=self.lookup_csv,drop=1)
         self.u0.get_market('stock_id')
@@ -75,31 +53,6 @@ class qmt_lib:
         bd = self.u0.get_column('bond_id')
         for i in bd:
             self.u0.write_pixel(i,'postions',0)
-        
-    def get_pos_df(self):
-        self.p0 = qmt_basic_lib(file=self.pos_file)  ##def check_position(df1,pos_file): add to 
-        print("posfile:")
-        print(self.p0.df)
-        self.p0.get_market('stock_id')
-        self.p0.get_market('bond_id')        
-        self.p0.pos_filter()        
-        self.p0.get_cash(self.accountfile)
-        bd = self.p0.get_column('bond_id')
-        acc=0
-        for i in bd:
-            p =self.p0.get_pixel(i, 'bond_id_price')
-            n = self.p0.get_pixel(i, 'postions')
-            acc = acc+ p*n
-        self.p0.capital = acc 
-        
-    def get_expect_df(self):
-        money = self.p0.cash + self.p0.capital
-        ave = money / self.max_stock_nums
-        bd = self.lowestN_df['bond_id']
-        for i in bd:
-            num = ave / self.u0.get_pixel(i, 'bond_id_price')
-            self.lowestN_df['postions'][i] =int(num)
-
             
     def get_sub_df(self):
         bd1 = self.lowestN_df.copy()
@@ -171,19 +124,7 @@ class qmt_lib:
         self.record.append(record1)
         #self.add_record(code, record1)
         
-        
-        ######update pos
-    def setup_record_df(self):
-        import pandas as pd
-        data = self.record
-        head=['stratgy_name','bond_nm','bond_id','bond_price','lots'] #['BOND_ID','stratgy_name',	'bond_nm','postions','stock_id'	,'convert_price','bond_id']
-        df1 = pd.DataFrame(data,columns=head)
-        df1.set_index('bond_id',inplace=True)
-        df1.columns.name='COLUMN_NAME'
-        df1.index.name='bond_id' 
-        self.new_record_df = df1.copy()
-
-    def test_exist(self,df,rowname,colunname):
+     def test_exist(self,df,rowname,colunname):
         index1 = df.index
         column1 = df.columns 
         if (rowname in index1) and (colunname in column1):
@@ -191,50 +132,7 @@ class qmt_lib:
         else:
             return False
         
-        
-           
-
-    def setup_new_pos_df(self):
-        newpos_df = self.pos_df.copy()
-        print("new_record_df")
-        print(self.new_record_df)
-        for i in self.new_record_df.index:
-            bd_nm = self.new_record_df['bond_nm'][i]
-            bd_p  = self.new_record_df['bond_price'][i]
-            lots =  self.new_record_df['lots'][i]
-            
-            if self.test_exist(self.lowestN_df,i,'stock_id'):
-                stock_id = self.lowestN_df['stock_id'][i]
-            else:
-                stock_id = self.pos_df['stock_id'][i]
-                
-            if self.test_exist(self.lowestN_df,i,'convert_price'):
-                cov_p = self.lowestN_df['convert_price'][i]
-            else:
-                cov_p = self.pos_df['convert_price'][i]
-                
-            #stock_id = self.lowestN_df['stock_id'][i]
-            #cov_p    = self.lowestN_df['convert_price'][i]
-            
-            inside=0
-            for j in self.pos_df.index:
-                if i==j:
-                    inside=1
-                    
-            if inside==1:
-                postion = self.pos_df['postions'][i] + self.new_record_df['lots'][i]
-                if postion>0:
-                    newpos_df['postions'][i] = postion
-                else:
-                    newpos_df.drop([i],axis=0,inplace=True)
-            else:
-                newpos_df.loc[i] = ['A',bd_nm,lots,stock_id,cov_p,i]
-                
-        
-        self.newpos_df = newpos_df
-
-        
-    def op_send_order(self):
+     def op_send_order(self):
         ##sell
         for i in self.sell_df.index:
             lots = self.sell_df['postions'][i]
@@ -251,29 +149,7 @@ class qmt_lib:
                 self.order_LOTS(i,lots,self.ContextInfo, self.accID)    
                 self.p0.cash = self.p0.cash - val
                 self.p0.capital = self.p0.capital + val
-            
-    def run(self):
-        self.get_lookup_df()
-        self.get_pos_df()
-        N= self.max_stock_nums 
-        self.lowestN_df = self.u0.df_filter('new_dlow_rank',N)
-        self.lowestM_df = self.u0.df_filter('new_dlow_rank',self.M)
-        print("lowestM")
-        print(self.lowestM_df)
-        print("lowestN")
-        print(self.lowestN_df)
-        self.pos_df     = self.p0.df
-        
-        
-        self.get_expect_df()
-        self.get_sub_df()
-        self.op_send_order()
-        self.setup_record_df()
-        self.setup_new_pos_df()
-        self.write_record()
-        self.p0.write_cash(self.accountfile)
-        
-        
+
     def run2(self):
         self.get_lookup_df()
         self.get_pos_df()
@@ -287,7 +163,138 @@ class qmt_lib:
         self.pos_df     = self.p0.df
        
         self.get_sub_df()
-        self.op_send_order()
+        self.op_send_order()    
+
+
+#    def print1(self,df):  ###this can pointer print to log file
+#        import sys
+#        log = open('log.txt','w')
+#        sys.stdout = log
+#        print(df)
+
+#    def write_record(self):
+#        newpos = self.newpos_df.copy()
+#        record = self.new_record_df.copy()
+#        
+#        newpos.to_csv(self.pos_file  ,encoding='gbk')
+#        record.to_csv(self.recordfile,encoding='gbk')
+#                
+#        #import pandas as pd
+#        #pd.set_option('display.max_rows',None)   
+#        print("final pos file")
+#        print(newpos)        
+#        # print('newpos')
+#        # print(newpos.df)
+#        print('final record file')
+#        print(record)
+
+
+        
+#    def get_pos_df(self):
+#        self.p0 = qmt_basic_lib(file=self.pos_file)  ##def check_position(df1,pos_file): add to 
+#        print("posfile:")
+#        print(self.p0.df)
+#        self.p0.get_market('stock_id')
+#        self.p0.get_market('bond_id')        
+#        self.p0.pos_filter()        
+#        self.p0.get_cash(self.accountfile)
+#        bd = self.p0.get_column('bond_id')
+#        acc=0
+#        for i in bd:
+#            p =self.p0.get_pixel(i, 'bond_id_price')
+#            n = self.p0.get_pixel(i, 'postions')
+#            acc = acc+ p*n
+#        self.p0.capital = acc 
+        
+#    def get_expect_df(self):
+#        money = self.p0.cash + self.p0.capital
+#        ave = money / self.max_stock_nums
+#        bd = self.lowestN_df['bond_id']
+#        for i in bd:
+#            num = ave / self.u0.get_pixel(i, 'bond_id_price')
+#            self.lowestN_df['postions'][i] =int(num)
+
+   
+        
+        ######update pos
+#    def setup_record_df(self):
+#        import pandas as pd
+#        data = self.record
+#        head=['stratgy_name','bond_nm','bond_id','bond_price','lots'] #['BOND_ID','stratgy_name',	'bond_nm','postions','stock_id'	,'convert_price','bond_id']
+#        df1 = pd.DataFrame(data,columns=head)
+#        df1.set_index('bond_id',inplace=True)
+#        df1.columns.name='COLUMN_NAME'
+#        df1.index.name='bond_id' 
+#        self.new_record_df = df1.copy()
+
+    
+           
+
+#    def setup_new_pos_df(self):
+#        newpos_df = self.pos_df.copy()
+#        print("new_record_df")
+#        print(self.new_record_df)
+#        for i in self.new_record_df.index:
+#            bd_nm = self.new_record_df['bond_nm'][i]
+#            bd_p  = self.new_record_df['bond_price'][i]
+#            lots =  self.new_record_df['lots'][i]
+#            
+#            if self.test_exist(self.lowestN_df,i,'stock_id'):
+#                stock_id = self.lowestN_df['stock_id'][i]
+#            else:
+#                stock_id = self.pos_df['stock_id'][i]
+#                
+#            if self.test_exist(self.lowestN_df,i,'convert_price'):
+#                cov_p = self.lowestN_df['convert_price'][i]
+#            else:
+#                cov_p = self.pos_df['convert_price'][i]
+#                
+#            #stock_id = self.lowestN_df['stock_id'][i]
+#            #cov_p    = self.lowestN_df['convert_price'][i]
+#            
+#            inside=0
+#            for j in self.pos_df.index:
+#                if i==j:
+#                    inside=1
+#                    
+#            if inside==1:
+#                postion = self.pos_df['postions'][i] + self.new_record_df['lots'][i]
+#                if postion>0:
+#                    newpos_df['postions'][i] = postion
+#                else:
+#                    newpos_df.drop([i],axis=0,inplace=True)
+#            else:
+#                newpos_df.loc[i] = ['A',bd_nm,lots,stock_id,cov_p,i]
+#                
+#        
+#        self.newpos_df = newpos_df
+
+        
+
+            
+#    def run(self):
+#        self.get_lookup_df()
+#        self.get_pos_df()
+#        N= self.max_stock_nums 
+#        self.lowestN_df = self.u0.df_filter('new_dlow_rank',N)
+#        self.lowestM_df = self.u0.df_filter('new_dlow_rank',self.M)
+#        print("lowestM")
+#        print(self.lowestM_df)
+#        print("lowestN")
+#        print(self.lowestN_df)
+#        self.pos_df     = self.p0.df
+#        
+#        
+#        self.get_expect_df()
+#        self.get_sub_df()
+#        self.op_send_order()
+#        self.setup_record_df()
+#        self.setup_new_pos_df()
+#        self.write_record()
+#        self.p0.write_cash(self.accountfile)
+        
+        
+
 
 
         

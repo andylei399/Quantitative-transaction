@@ -11,3 +11,4 @@
 [cal_prem]->[rank_MN]
 [rank_MN]->[lot_list]
 //every bond has the same capital
+
