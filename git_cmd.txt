@@ -7,6 +7,7 @@ git config --global --unset http.proxy
 git config --global --unset https.proxy
 git push -u origin main  ###must notice the current dir is master or main
 
+git status
 
 
 ###cd Quantitative-transaction  ###NOTICE
