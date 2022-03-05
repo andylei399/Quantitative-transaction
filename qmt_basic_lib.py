@@ -30,7 +30,7 @@ class qmt_basic_lib:
 #            for i in ['bond_price','prem','put_convert_price','force_redeem_price','last_time','dblow','stock_nm','stock_price']:
 #                if(drop):
 #                    self.drop_column(i)
-loc[]            
+#loc[]            
 
     def df_filter(self,columname,N=0):
             if N==0:
